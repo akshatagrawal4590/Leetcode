@@ -10,62 +10,71 @@
  */
 class Solution {
 public:
-    // ListNode* reverseKGroup(ListNode* head, int k) 
-    // {
-    //     if(head == NULL || head -> next == NULL)
-    //     {
-    //         return head;
-    //     }
-    //     int x = 1;
-    //     Node* temp = head;
-    //     Node* newHead = NULL;
-    //     Node* tail = NULL;
-    //     Node* temp1 = NULL;
-    //     Node* temp2 = NULL;
-    //     while(temp != NULL)
-    //     {
-    //         if(x == 1)
-    //         {
-    //             temp1 = temp;
-    //             x++;
-    //             temp = temp -> next;
-    //         }
-    //         else if(x)
-    //     }
-    // }
-    ListNode* reverseKGroup(ListNode* head, int k) {
-        if(head==NULL || head->next==NULL){
+    pair<ListNode*, ListNode*> f(ListNode* head)
+    {
+        ListNode* temp = head;
+        ListNode* temp1 = temp -> next;
+        ListNode* tail = head;
+        while(temp != NULL && temp1 != NULL)
+        {
+            ListNode* temp2 = temp1 -> next;
+            temp1 -> next = temp;
+            temp = temp1;
+            temp1 = temp2;
+        }
+        tail -> next = NULL;
+        return make_pair(temp, tail);
+    }
+    
+    ListNode* reverseKGroup(ListNode* head, int k) 
+    {
+        if(head == NULL || head -> next == NULL || k == 1)
+        {
             return head;
         }
-        int cnt = 0;
-        ListNode* counter = head;
+        int x = 1;
         ListNode* temp = head;
-        ListNode* ans = head;
-        while(counter!=NULL){
-            cnt++;
-            counter = counter->next;
-        }
-        cnt /= k;
-        stack<int> st;
-        int k1 = k;
-
-        while(temp!=NULL){
-            st.push(temp->val);
-            k1--;
-            temp = temp->next;
-            if(k1==0){
-                while(!st.empty()){
-                    ans->val = st.top();
-                    st.pop();
-                    ans = ans->next;
+        ListNode* newHead = NULL;
+        ListNode* tail = NULL;
+        ListNode* temp1 = NULL;
+        ListNode* temp2 = NULL;
+        ListNode* temp3 = NULL;
+        while(temp != NULL)
+        {
+            if(x == 1)
+            {
+                temp1 = temp;
+                x++;
+                temp = temp -> next;
+            }
+            else if(x < k)
+            {
+                x++;
+                temp = temp -> next;
+            }
+            else if(x == k)
+            {
+                temp2 = temp;
+                temp = temp -> next;
+                x = 1;
+                temp2 -> next = NULL;
+                pair<ListNode*, ListNode*> p1 = f(temp1);
+                if(newHead == NULL)
+                {
+                    newHead = p1.first;
+                    temp3 = p1.second;
                 }
-                cnt--;
-                k1 = k;
-            }
-            if(cnt==0){
-                break;
+                else
+                {
+                    temp3 -> next = p1.first;
+                    temp3 = p1.second;
+                }
             }
         }
-        return head;
+        if(temp3 != temp1)
+        {
+            temp3 -> next = temp1;   
+        }
+        return newHead;
     }
 };
