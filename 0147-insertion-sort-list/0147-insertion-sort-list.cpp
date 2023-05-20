@@ -11,29 +11,26 @@
 class Solution {
 public:
     ListNode* insertionSortList(ListNode* head) {
-        // Second Approach -> Selection Sort;
-        if(!head || !head->next) return head;
-
-        ListNode *start = new ListNode(INT_MIN), *curr = head -> next;
-        start -> next = head;
-        ListNode *prev = head;
-
-        while(curr) {
-            if(curr -> val < prev -> val) {
-                ListNode *now = curr, *temp = start;
-                curr = curr -> next;
-                while(temp -> next -> val < now -> val) temp = temp -> next;
-                ListNode *next = temp -> next;
-                temp -> next = now;
-                now -> next = next;
-                prev -> next = curr;
-            }else {
-                prev = curr;
-                curr = curr -> next;
+        if(!head){return NULL;}
+        vector<int>v;
+        while(head){
+            v.push_back(head->val);
+            head=head->next;
+        }
+        for(int i=1; i<v.size(); i++){
+            int j=i;
+            while(j && v[j]<v[j-1]){
+                swap(v[j], v[j-1]);
+                j--;
             }
         }
-        prev -> next = nullptr;
-
-        return start -> next;
+        ListNode* root=NULL;
+        for(int i=v.size()-1; i>=0; i--){
+            ListNode* temp=new ListNode;
+            temp->val=v[i];
+            temp->next=root;
+            root=temp;
+        }
+        return root;
     }
 };
