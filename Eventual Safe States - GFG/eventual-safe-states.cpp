@@ -10,7 +10,7 @@ using namespace std;
 
 class Solution {
   public:
-    bool f(vector<int> &visited, vector<int> &pathvisited, vector<int> adj[], int sv)
+    bool f(vector<int> &visited, vector<int> &pathvisited, vector<int> adj[], int sv, vector<int> &safe)
     {
         for(auto it : adj[sv])
         {
@@ -18,17 +18,24 @@ class Solution {
             {
                 return true;
             }
-            visited[it] = 1;
-            pathvisited[it] = 1;
-            bool x = f(visited, pathvisited, adj, it);
-            pathvisited[it] = 0;
-            if(x == true)
+            if(visited[it] == 0)
+            {
+                visited[it] = 1;
+                pathvisited[it] = 1;
+                bool x = f(visited, pathvisited, adj, it, safe);
+                pathvisited[it] = 0;
+                if(x == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    visited[it] = 0;
+                }
+            }
+            else if(safe[it] == 0)
             {
                 return true;
-            }
-            else
-            {
-                visited[it] = 0;
             }
         }
         return false;
@@ -38,6 +45,7 @@ class Solution {
     {
         vector<int> visited(v, 0);
         vector<int> pathvisited(v, 0);
+        vector<int> safe(v, 0);
         vector<int> ans;
         for(int i = 0; i < v; i++)
         {
@@ -45,10 +53,11 @@ class Solution {
             {
                 pathvisited[i] = 1;
                 visited[i] = 1;
-                bool x = f(visited, pathvisited, adj, i);
+                bool x = f(visited, pathvisited, adj, i, safe);
                 pathvisited[i] = 0;
                 if(x == false)
                 {
+                    safe[i] = 1;
                     ans.push_back(i);
                 }
             }
