@@ -9,47 +9,23 @@ using namespace std;
 
 class Solution {
   public:
-    int minVal(int a, int b) 
-    {
-        int a1 = a;
-        vector<int> v;
-        while(a != 0)
-        {
-            v.push_back(a % 2);
-            a = a / 2;
+    int minVal(int a, int b) {
+        int ans=0;
+        int tbs = __builtin_popcount(b);
+        
+        for(int i =31;i>=0;i--){
+            if(tbs > 0 and (a&(1<<i))){
+                ans|=(1LL<<i);
+                tbs--;
+            }
         }
-        int bits = 0;
-        int n = ceil(log2(b));
-        int i = 1;
-        while(i <= n)
-        {
-            if(b & (1 << i - 1))
-            {
-                bits++;
+        for(int i =0;i<31;i++){
+            if(tbs > 0 and (a&(1LL<<i)) == 0 ){
+                ans|=(1<<i);
+                tbs--;
             }
-            i++;
         }
-        n = v.size();
-        i = n - 1;
-        int ans = 0;
-        while(i >= 0)
-        {
-            if(v[i] == 1 && bits > 0)
-            {
-                bits--;
-            }
-            else if(v[i] == 1 && bits == 0)
-            {
-                v[i] = 0;
-            }
-            else if(bits == i + 1)
-            {
-                v[i] = 1;
-                bits--;
-            }
-            ans = ans + v[i] * pow(2, i);
-            i--;
-        }
+
         return ans;
     }
 };
